@@ -25,7 +25,9 @@ const SYSTEM_CHANNEL_ID = process.env.SYSTEM_CHANNEL_ID;
 
 const slackWebUser = new WebClient(SLACK_USER_TOKEN);
 const slackWebBot = new WebClient(SLACK_BOT_TOKEN);
-const slackEvents = createEventAdapter(SLACK_SIGNING_SECRET);
+const slackEvents = createEventAdapter(SLACK_SIGNING_SECRET, {
+  waitForResponse: true
+});
 
 interface Message {
   type: 'message';
