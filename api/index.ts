@@ -2,9 +2,13 @@ import { createEventAdapter } from '@slack/events-api';
 import { WebClient } from '@slack/web-api';
 import express from 'express';
 
-const SLACK_TOKEN = process.env.SLACK_TOKEN;
-if (!SLACK_TOKEN) {
-  throw new Error('No SLACK_TOKEN provided');
+const SLACK_USER_TOKEN = process.env.SLACK_USER_TOKEN;
+if (!SLACK_USER_TOKEN) {
+  throw new Error('No SLACK_USER_TOKEN provided');
+}
+const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
+if (!SLACK_BOT_TOKEN) {
+  throw new Error('No SLACK_BOT_TOKEN provided');
 }
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 if (!SLACK_SIGNING_SECRET) {
@@ -19,7 +23,8 @@ if (!process.env.SYSTEM_CHANNEL_ID) {
 }
 const SYSTEM_CHANNEL_ID = process.env.SYSTEM_CHANNEL_ID;
 
-const slackWeb = new WebClient(SLACK_TOKEN);
+const slackWebUser = new WebClient(SLACK_USER_TOKEN);
+const slackWebBot = new WebClient(SLACK_BOT_TOKEN);
 const slackEvents = createEventAdapter(SLACK_SIGNING_SECRET);
 
 interface Message {
@@ -41,9 +46,9 @@ const MESSAGES_TO_DELETE = new Set([
 
 slackEvents.on('message', async (message: Message) => {
   if (message.subtype && MESSAGES_TO_DELETE.has(message.subtype)) {
-    const log = `<#${message.channel}>: ${message.text}`;
+    const log = `<#${message.channel}>: <@${message.user}> ${message.text}`;
     console.log(log);
-    const response = await slackWeb.chat.delete({
+    const response = await slackWebUser.chat.delete({
       channel: message.channel,
       ts: message.ts,
       as_user: true
@@ -51,7 +56,7 @@ slackEvents.on('message', async (message: Message) => {
     if (!response.ok) {
       console.error(response);
     }
-    const response2 = await slackWeb.chat.postMessage({
+    const response2 = await slackWebBot.chat.postMessage({
       channel: SYSTEM_CHANNEL_ID,
       text: log
     });
