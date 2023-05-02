@@ -52,20 +52,14 @@ slackEvents.on('message', async (message: Message) => {
   }
 });
 
-// (async () => {
-//   // Start the built-in server
-//   await slackEvents.start(PORT);
-
-//   // Log a message when the server is ready
-//   console.log(`Listening for events on ${PORT}`);
-// })();
-
 const app = express();
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Slack messages cleaner is running');
 });
+
+app.use('/slack/events', slackEvents.requestListener());
 
 app.listen(PORT, '0.0.0.0');
 
-module.exports = app;
+export default app;

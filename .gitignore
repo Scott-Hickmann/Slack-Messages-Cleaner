@@ -113,3 +113,4 @@ peers/
 databases/
 
 *.DS_Store
+.vercel
