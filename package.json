@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json --require dotenv-safe/config src/index.ts",
-    "build": "tsc --project tsconfig.json",
     "start": "node --require dotenv-safe/config api/index.js dotenv_config_path=.env"
   },
   "repository": {
