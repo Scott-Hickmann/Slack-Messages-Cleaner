@@ -1,7 +1,6 @@
 import { createEventAdapter } from '@slack/events-api';
 import { WebClient } from '@slack/web-api';
 import express from 'express';
-import fs from 'fs/promises';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
 if (!SLACK_TOKEN) {
@@ -15,6 +14,10 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : undefined;
 if (!PORT || isNaN(PORT)) {
   throw new Error('No PORT provided');
 }
+if (!process.env.SYSTEM_CHANNEL_ID) {
+  throw new Error('No SYSTEM_CHANNEL_ID provided');
+}
+const SYSTEM_CHANNEL_ID = process.env.SYSTEM_CHANNEL_ID;
 
 const slackWeb = new WebClient(SLACK_TOKEN);
 const slackEvents = createEventAdapter(SLACK_SIGNING_SECRET);
@@ -38,15 +41,21 @@ const MESSAGES_TO_DELETE = new Set([
 
 slackEvents.on('message', async (message: Message) => {
   if (message.subtype && MESSAGES_TO_DELETE.has(message.subtype)) {
-    const log = `${message.channel}: ${message.text}`;
+    const log = `<#${message.channel}>: ${message.text}`;
     console.log(log);
-    await fs.appendFile('messages.txt', `${log}\n`);
     const response = await slackWeb.chat.delete({
       channel: message.channel,
       ts: message.ts,
       as_user: true
     });
     if (!response.ok) {
+      console.error(response);
+    }
+    const response2 = await slackWeb.chat.postMessage({
+      channel: SYSTEM_CHANNEL_ID,
+      text: log
+    });
+    if (!response2.ok) {
       console.error(response);
     }
   }
