@@ -1,5 +1,6 @@
 import { createEventAdapter } from '@slack/events-api';
 import { WebClient } from '@slack/web-api';
+import express from 'express';
 import fs from 'fs/promises';
 
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
@@ -51,10 +52,18 @@ slackEvents.on('message', async (message: Message) => {
   }
 });
 
-(async () => {
-  // Start the built-in server
-  await slackEvents.start(PORT);
+// (async () => {
+//   // Start the built-in server
+//   await slackEvents.start(PORT);
 
-  // Log a message when the server is ready
-  console.log(`Listening for events on ${PORT}`);
-})();
+//   // Log a message when the server is ready
+//   console.log(`Listening for events on ${PORT}`);
+// })();
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(PORT, '0.0.0.0');
