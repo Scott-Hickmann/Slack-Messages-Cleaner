@@ -114,3 +114,4 @@ databases/
 
 *.DS_Store
 .vercel
+api
