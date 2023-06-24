@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Scott-Hickmann/Slack-System-Messages.git"
+    "url": "git+https://github.com/Scott-Hickmann/Slack-Messages-Cleaner.git"
   },
   "author": "Crothers",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Scott-Hickmann/Slack-System-Messages/issues"
+    "url": "https://github.com/Scott-Hickmann/Slack-Messages-Cleaner/issues"
   },
-  "homepage": "https://github.com/Scott-Hickmann/Slack-System-Messages#readme",
+  "homepage": "https://github.com/Scott-Hickmann/Slack-Messages-Cleaner#readme",
   "dependencies": {
     "@slack/events-api": "^3.0.1",
     "@slack/web-api": "^6.8.1",
